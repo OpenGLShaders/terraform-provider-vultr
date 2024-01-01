@@ -9,6 +9,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/vultr/govultr/v3"
 )
@@ -279,7 +280,7 @@ func waitForDatabaseReplicaAvailable(ctx context.Context, d *schema.ResourceData
 		"[INFO] Waiting for Managed Database read replica (%s) to have %s of %s",
 		d.Id(), attribute, target)
 
-	stateConf := &resource.StateChangeConf{ // nolint:all
+	stateConf := &retry.StateChangeConf{ // nolint:all
 		Pending:        pending,
 		Target:         []string{target},
 		Refresh:        newDatabaseReplicaStateRefresh(ctx, d, meta, attribute),
@@ -316,7 +317,7 @@ func waitForParentBackupAvailable(ctx context.Context, d *schema.ResourceData, t
 		"[INFO] Waiting for parent Managed Database (%s) to have %s of %s",
 		d.Get("database_id").(string), attribute, target)
 
-	stateConf := &resource.StateChangeConf{ // nolint:all
+	stateConf := &retry.StateChangeConf{ // nolint:all
 		Pending:        pending,
 		Target:         []string{target},
 		Refresh:        parentDatabaseRefresh(ctx, d, meta, attribute),

@@ -788,7 +788,7 @@ func waitForServerAvailable(ctx context.Context, d *schema.ResourceData, target 
 		"[INFO] Waiting for Server (%s) to have %s of %s",
 		d.Id(), attribute, target)
 
-	stateConf := &resource.StateChangeConf{ // nolint:all
+	stateConf := &retry.StateChangeConf{ // nolint:all
 		Pending:        pending,
 		Target:         []string{target},
 		Refresh:        newServerStateRefresh(ctx, d, meta, attribute),
@@ -828,7 +828,7 @@ func waitForUpgrade(ctx context.Context, d *schema.ResourceData, target string, 
 		"[INFO] Waiting for instance (%s) to have %s of %s",
 		d.Id(), attribute, target)
 
-	stateConf := &resource.StateChangeConf{ // nolint:all
+	stateConf := &retry.StateChangeConf{ // nolint:all
 		Pending:        pending,
 		Target:         []string{target},
 		Refresh:        newInstancePlanRefresh(ctx, d, meta, attribute),
